@@ -1,0 +1,16 @@
+{
+  "name": "c3-benchmarking",
+  "build": {
+    "dockerfile": "../Dockerfile"
+  },
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      }
+    }
+  },
+  "postCreateCommand": "echo 'Container ready. Run your data download script.'",
+  "remoteUser": "root"
+}
