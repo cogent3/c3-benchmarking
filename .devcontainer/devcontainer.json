@@ -14,6 +14,6 @@
       }
     }
   },
-  "postCreateCommand": "uv pip install -e . && echo 'Container ready. Run your data download script.'",
+  "postCreateCommand": "pip install -e . && echo 'Container ready. Run your data download script.'",
   "remoteUser": "root"
 }

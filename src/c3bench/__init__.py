@@ -1,3 +1,5 @@
+
+"""c3bench: Benchmarking suite for sequence analysis tools."""
 __version__ = "0.1"
 
 def main() -> None:

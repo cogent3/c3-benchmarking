@@ -33,7 +33,7 @@ You can interactively select which datasets to download, and the script will pro
    ```
 7. **Run benchmarks:**
    ```sh
-   python -m c3bench.main
+   c3bench
    ```
 
 ---
@@ -60,8 +60,14 @@ You can interactively select which datasets to download, and the script will pro
    ```
 5. **Run benchmarks:**
    ```sh
-   python -m c3bench.main
+   c3bench
    ```
+
+---
+
+## Note on VS Code Dev Container Terminals
+
+After the container builds, the initial terminal may be used by VS Code for setup and extension installation, and may appear to hang or display setup logs. For interactive work, open a new terminal in VS Code after the container is ready.
 
 ---
 
