@@ -22,6 +22,9 @@ WORKDIR /workspace
 COPY pyproject.toml README.md LICENSE ./
 COPY src ./src
 
+# Copy scripts directory into the container
+COPY scripts ./scripts
+
 # Install c3bench in editable mode
 RUN uv pip install -e .
 
