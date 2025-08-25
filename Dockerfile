@@ -18,6 +18,13 @@ RUN /opt/conda/envs/toolenv/bin/python -m pip install --upgrade pip && \
 RUN mkdir -p /workspace/data
 WORKDIR /workspace
 
+# Copy project files into the container
+COPY pyproject.toml README.md LICENSE ./
+COPY src ./src
+
+# Install c3bench in editable mode
+RUN uv pip install -e .
+
 # Set default shell to bash (VS Code expects bash)
 SHELL ["/bin/bash", "-c"]
 
