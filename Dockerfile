@@ -9,10 +9,11 @@ RUN mamba create -n toolenv python=3.13 r-base -y && \
 ENV CONDA_DEFAULT_ENV=toolenv
 ENV PATH=/opt/conda/envs/toolenv/bin:$PATH
 
-# Install Python packages with uv
-RUN /opt/conda/envs/toolenv/bin/python -m pip install --upgrade pip && \
-    /opt/conda/envs/toolenv/bin/pip install uv && \
-    /opt/conda/envs/toolenv/bin/uv pip install "cogent3[extra]" scikit-bio biopython
+
+# Install Python packages with uv (use --system for conda env)
+RUN /opt/conda/envs/toolenv/bin/python -m pip install --upgrade pip --root-user-action=ignore && \
+    /opt/conda/envs/toolenv/bin/pip install uv --root-user-action=ignore && \
+    /opt/conda/envs/toolenv/bin/uv pip install --system "cogent3[extra]" scikit-bio biopython
 
 # Create workspace and data directories
 RUN mkdir -p /workspace/data
@@ -25,8 +26,8 @@ COPY src ./src
 # Copy scripts directory into the container
 COPY scripts ./scripts
 
-# Install c3bench in editable mode
-RUN uv pip install -e .
+# Install c3bench in editable mode (use --system for conda env)
+RUN uv pip install --system -e .
 
 # Set default shell to bash (VS Code expects bash)
 SHELL ["/bin/bash", "-c"]
