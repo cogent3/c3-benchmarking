@@ -10,7 +10,7 @@ authors = [
 keywords = ["biology", "genomics", "statistics", "phylogeny", "evolution", "bioinformatics"]
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = "3.13"
+requires-python = "==3.13"
 dependencies = ["click"]
 classifiers = [
         "Development Status :: 5 - Production/Stable",
@@ -23,10 +23,6 @@ classifiers = [
     ]
 # the following are inferred from the source code
 dynamic = ["version", "description"]
-
-[project.sdist]
-include = ["doc/", "requirements.txt", "src/*", "pyproject.toml"]
-exclude = ["doc/*.html"]
 
 [project.scripts]
 myproject = "c3bench.__init__:main"
@@ -46,3 +42,14 @@ dev = [
 [tool.pytest.ini_options]
 addopts = ["--strict-config", "-ra"]
 testpaths = "tests"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.sdist]
+include = ["doc/", "requirements.txt", "src/*", "pyproject.toml"]
+exclude = ["doc/*.html"]
+
