@@ -1,0 +1,48 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "c3bench"
+authors = [
+    { name = "Your Name", email = "Your.Email@somewhere.edu.au"},
+]
+keywords = ["biology", "genomics", "statistics", "phylogeny", "evolution", "bioinformatics"]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = "3.13"
+dependencies = ["click"]
+classifiers = [
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: BSD License",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3.10",
+    ]
+# the following are inferred from the source code
+dynamic = ["version", "description"]
+
+[project.sdist]
+include = ["doc/", "requirements.txt", "src/*", "pyproject.toml"]
+exclude = ["doc/*.html"]
+
+[project.scripts]
+myproject = "c3bench.__init__:main"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-xdist",
+    "nox",
+]
+dev = [
+    "ruff",
+    "c3bench[test]",
+]
+
+[tool.pytest.ini_options]
+addopts = ["--strict-config", "-ra"]
+testpaths = "tests"
