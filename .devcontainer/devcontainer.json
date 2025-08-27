@@ -11,8 +11,14 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "terminal.integrated.shell.linux": "/bin/zsh"
-      }
+        "terminal.integrated.shell.linux": "/bin/zsh",
+        "extensions.ignoreRecommendations": true
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pytest",
+        "ms-toolsai.jupyter"
+      ]
     }
   },
   "postCreateCommand": "uv pip install -e /workspace && echo 'Container ready. Run c3bench to run benchmarks'",
