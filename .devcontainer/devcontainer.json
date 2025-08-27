@@ -1,0 +1,21 @@
+{
+  "name": "c3-benchmarking",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": ".."
+  },
+  "workspaceFolder": "/workspace",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/zsh"
+      }
+    }
+  },
+  "postCreateCommand": "uv pip install -e /workspace && echo 'Container ready. Run c3bench to run benchmarks'",
+  "remoteUser": "user",
+  "updateRemoteUserUID": false
+}
