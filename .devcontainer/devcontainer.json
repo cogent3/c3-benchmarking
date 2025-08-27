@@ -15,7 +15,7 @@
       }
     }
   },
-  "postCreateCommand": "echo 'Container ready. Run c3bench to run benchmarks'",
+  "postCreateCommand": "uv pip install -e /workspace && echo 'Container ready. Run c3bench to run benchmarks'",
   "remoteUser": "user",
   "updateRemoteUserUID": false
 }
