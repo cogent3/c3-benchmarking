@@ -23,8 +23,6 @@ lib
 lib64
 doc/_build
 
-# docker stuff
-# .devcontainer/*   # disabled so we can deploy a VS-Code devcontainer in the repo
 
 # Installer logs
 pip-log.txt
