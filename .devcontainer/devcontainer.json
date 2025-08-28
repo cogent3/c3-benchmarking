@@ -4,10 +4,6 @@
     "dockerfile": "../Dockerfile",
     "context": ".."
   },
-  "workspaceFolder": "/workspace",
-  "mounts": [
-    "source=${localWorkspaceFolder},target=/workspace,type=bind"
-  ],
   "customizations": {
     "vscode": {
       "settings": {
@@ -21,7 +17,10 @@
       ]
     }
   },
-  "postCreateCommand": "uv pip install -e /workspace && echo 'Container ready. Run c3bench to run benchmarks'",
   "remoteUser": "user",
+  "workspaceFolder": "/home/user/",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/home/user/c3-benchmarking,type=bind,consistency=cached"
+  ],
   "updateRemoteUserUID": false
 }
