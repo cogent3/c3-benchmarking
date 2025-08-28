@@ -3,13 +3,8 @@
 Benchmarking cogent3 and other Python/R tools for sequence analysis.
 
 ## Overview
-This project benchmarks cogent3, biopython, scikit-bio, and R tools (Biostrings, genbankr, rtracklayer, ape) for common sequence analysis tasks. Results are collected using `perf` and stored in the `results` folder.
 
-## Data & Results
-Datasets are stored in the `data` directory, and benchmark outputs are stored in the `results` directory. Both directories are gitignored by default and will not be tracked in the repository.
-
-
-You can interactively select which datasets to download, and the script will prompt before overwriting any existing files.
+This project **WILL** benchmark cogent3, biopython, scikit-bio, and R tools (Biostrings, genbankr, rtracklayer, ape) for common sequence analysis tasks.
 
 ---
 
@@ -22,22 +17,23 @@ You can interactively select which datasets to download, and the script will pro
    ```
 2. **Open in VS Code.**
 3. **Reopen in Container** when prompted, or use the Command Palette: `Dev Containers: Reopen in Container`.
-4. The workspace will be bind-mounted into the container. The environment is set up automatically.
+4. The workspace will be bind-mounted into the container as `c3-benchmarking`. The environment is set up automatically.
 5. **Install your code in editable mode:** This is done automatically when the container is built.
-6. **Run benchmarks:**
-   ```sh
-   c3bench
-   ```
+
+---
+
+## Data
+
+Within the active docker container, change into the `c3-benchmarking` directory and run
+
+```
+python setup_data.py
+```
+
+This will download any datasets not yet present and put them into `data/`. They currently take up ~4GB.
 
 ---
 
 ## Note on VS Code Dev Container Terminals
 
 After the container builds, the initial terminal may be used by VS Code for setup and extension installation, and may appear to hang or display setup logs. For interactive work, open a new terminal in VS Code after the container is ready.
-
----
-
-## Notes
-- Results are stored in the `results` directory, which is gitignored.
-- Datasets are stored in the `data` directory, which is gitignored.
-- For questions or issues, please open an issue on GitHub.
