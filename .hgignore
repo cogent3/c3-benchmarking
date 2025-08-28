@@ -43,3 +43,4 @@ hg_old/*
 venv*
 .venv*
 .mypy*
+data/*

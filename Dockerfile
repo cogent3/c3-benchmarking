@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     git \
     zsh \
     sudo \
-    libhdf5-dev \
+    less \
     ca-certificates \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -42,7 +42,10 @@ RUN echo "" >> ~/.zshrc && \
     echo "# Auto-activate benchmark environment" >> ~/.zshrc && \
     echo "mamba activate benchmark" >> ~/.zshrc
 
+WORKDIR /home/${USER}/c3-benchmarking
+ADD pyproject.toml README.md LICENSE setup_data.py ./
+ADD src ./src
+RUN mamba run -n benchmark uv pip install -e .
+
 # Set the default command to start zsh
 CMD ["zsh"]
-
-
