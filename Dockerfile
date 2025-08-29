@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     sudo \
     less \
     ca-certificates \
+    gcc \
+    g++ \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -45,7 +47,7 @@ RUN echo "" >> ~/.zshrc && \
 WORKDIR /home/${USER}/c3-benchmarking
 ADD pyproject.toml README.md LICENSE setup_data.py ./
 ADD src ./src
-RUN mamba run -n benchmark uv pip install -e .
+RUN mamba run -n benchmark uv pip install -e ".[dev]"
 
 # Set the default command to start zsh
 CMD ["zsh"]
