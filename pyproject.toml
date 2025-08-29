@@ -11,7 +11,7 @@ keywords = ["biology", "genomics", "statistics", "phylogeny", "evolution", "bioi
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.13"
-dependencies = ["click", "rich"]
+dependencies = ["click", "rich", "cogent3-h5seqs>=0.6.0"]
 classifiers = [
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
@@ -37,6 +37,7 @@ test = [
 dev = [
     "ruff",
     "c3bench[test]",
+    "line-profiler",
 ]
 
 [tool.pytest.ini_options]
