@@ -1,63 +1,12 @@
-# Ignore all files in the data directory
-data/
-# Ignore all files in the results directory
-results/
-*.py[cod]
-
-# C extensions
-*.so
-
-# Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
-.installed.cfg
-lib
-lib64
-doc/_build
-
-
-# Installer logs
-pip-log.txt
-
-# Unit test / coverage reports
-.mypy*
-.coverage*
-.tox
-.nox
-coverage.xml
-junit-*.xml
-nosetests.xml
-tests/draw_results
-lcov*.info
-.ruff_cache/*
-
-# Translations
-*.mo
-
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
-.idea/*
-.DS_Store
-__pycache__
-*.code-workspace
-*.wpr
-*.wpu
-.vscode/*
-venv*
-.venv*
-working/
-*.ipynb
-*.ipynb_checkpoints/
-
-# vi
-.*.swp
+*
+!.devcontainer/devcontainer.json
+!.gitignore
+!.hgignore
+!Dockerfile
+!LICENSE
+!README.md
+!nbks/compare-parsing-loading.ipynb
+!*.toml
+!scripts/redo_all.sh
+!setup_data.py
+!src/**/*.py**
