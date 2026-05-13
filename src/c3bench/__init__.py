@@ -3,6 +3,7 @@
 import pathlib
 
 import click
+import cogent3
 
 from c3bench.measure import run_functions
 
@@ -93,6 +94,13 @@ def load_aln(path, result_root, timeout):
     outdir = result_root / "load_aln" / path.parent.name
     outpath = (outdir / f"{path.name}.tsv").absolute()
     outdir.mkdir(parents=True, exist_ok=True)
+
+    # we make a c3h5 formatted file for comparison with standard format
+    c3h5path = path.with_suffix(".c3h5s")
+    if not c3h5path.exists():
+        aln = cogent3.load_aligned_seqs(path, moltype="dna", storage_backend="c3h5s")
+        aln.write(c3h5path)
+        del c3h5path
 
     funcs = public_functions(la)
     table = run_functions(funcs=funcs, n=3, path=path, maxtime=timeout)

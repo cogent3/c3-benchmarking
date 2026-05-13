@@ -1,8 +1,6 @@
 import functools
-import html
 import inspect
 import math
-import re
 import signal
 import time
 import types
@@ -109,10 +107,11 @@ def run_functions(*, funcs: dict[str, typing.Callable], n: int, maxtime: int, **
             result = format_result(result)
             result = f"Error: {result}..."
         elif isinstance(result, list):
-            type_name = type(result[0]).__name__.replace("\n", " ")
+            type_name = result[0].__class__.__name__
             result = f"list({type_name} x {len(result)})"
+        else:
+            result = result.__class__.__name__
 
-        result = format_result(result)
         results.append([name, result, mean_time, std_time, mean_mem, std_mem])
 
     return cogent3.make_table(

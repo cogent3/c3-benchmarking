@@ -19,6 +19,11 @@ def c3(path):
 def c3h5s(path):
     return load_aligned_seqs(path, moltype="dna", storage_backend="c3h5s")
 
+@measure.record_time_and_size
+def c3h5s_formatted(path):
+    """c3h5s loaded from file"""
+    outpath = path.with_suffix(".c3h5s")
+    return load_aligned_seqs(outpath, moltype="dna")
 
 @measure.record_time_and_size
 def sb(path):
