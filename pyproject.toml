@@ -22,11 +22,9 @@ dependencies = [
     "click",
     "rich",
     "biopython",
-    "psrecord",
     "scikit-bio",
     "cogent3[extra]",
     "cogent3-h5seqs>=0.9.0",
-    "pympler>=1.1",
     "bcbio-gff>=0.7.1",
 ]
 classifiers = [
@@ -57,4 +55,4 @@ source-include = ["doc/**", "src/**", "pyproject.toml"]
 source-exclude = ["doc/*.html"]
 
 [dependency-groups]
-dev = ["biopython>=1.85", "psrecord>=1.4", "scikit-bio>=0.7.0"]
+dev = ["biopython>=1.85", "scikit-bio>=0.7.0"]
