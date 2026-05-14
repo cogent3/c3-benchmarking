@@ -1,9 +1,9 @@
 """c3bench: Benchmarking suite for sequence analysis tools."""
 
+import importlib
 import pathlib
 
 import click
-import cogent3
 
 from c3bench.measure import run_functions
 
@@ -16,6 +16,16 @@ _click_command_opts = {
 }
 
 
+# Maps the user-facing task name (the click subcommand) to the module that holds
+# its COMMANDS registry and per-tool implementations.
+_TASK_MODULES = {
+    "parse-fasta": "c3bench.parse_fa",
+    "parse-gbk": "c3bench.parse_gbk",
+    "parse-gff": "c3bench.parse_gff",
+    "load-aln": "c3bench.load_aln",
+}
+
+
 @click.group(**_click_command_opts)
 @click.version_option(__version__)
 def main() -> None:
@@ -25,6 +35,21 @@ def main() -> None:
 _path = click.option("--path", type=pathlib.Path, required=True)
 _result_root = click.option("--result_root", type=pathlib.Path, required=True)
 _timeout = click.option("--timeout", type=int, default=20)
+
+
+@main.command(**_click_command_opts)
+@click.argument("task", type=click.Choice(list(_TASK_MODULES)))
+@_path
+def prepare(task: str, path: pathlib.Path) -> None:
+    """Build any side-effect artifacts a task needs before timing.
+
+    Idempotent: re-running is safe. Task modules without a `prepare` function
+    are a no-op.
+    """
+    module = importlib.import_module(_TASK_MODULES[task])
+    prep = getattr(module, "prepare", None)
+    if prep is not None:
+        prep(path)
 
 
 @main.command(**_click_command_opts)
@@ -95,12 +120,7 @@ def load_aln(path, result_root, timeout):
     outpath = (outdir / f"{path.name}.tsv").absolute()
     outdir.mkdir(parents=True, exist_ok=True)
 
-    # we make a c3h5 formatted file for comparison with standard format
-    c3h5path = path.with_suffix(".c3h5s")
-    if not c3h5path.exists():
-        aln = cogent3.load_aligned_seqs(path, moltype="dna", storage_backend="c3h5s")
-        aln.write(c3h5path)
-        del c3h5path
+    la.prepare(path)
 
     funcs = public_functions(la)
     table = run_functions(funcs=funcs, n=3, path=path, maxtime=timeout)

@@ -7,6 +7,17 @@ COMMANDS = {
 }
 
 
+def prepare(path):
+    """Materialise the .c3h5s companion file so c3h5s_formatted has something to read."""
+    import cogent3
+
+    c3h5path = path.with_suffix(".c3h5s")
+    if c3h5path.exists():
+        return
+    aln = cogent3.load_aligned_seqs(path, moltype="dna", storage_backend="c3h5s")
+    aln.write(c3h5path)
+
+
 def bp(path):
     from Bio import AlignIO
 
