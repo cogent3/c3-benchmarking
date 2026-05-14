@@ -40,6 +40,7 @@ classifiers = [
 ]
 [project.scripts]
 c3bench = "c3bench:main"
+c3bench-run = "c3bench.dispatch:main"
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov", "pytest-xdist", "nox"]

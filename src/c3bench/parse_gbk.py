@@ -1,20 +1,16 @@
-from Bio import SeqIO
-from cogent3.parse.genbank import iter_genbank_records
-from skbio.io import read
-
-from c3bench import measure
-
-
-@measure.record_time_and_size
 def bp(path):
+    from Bio import SeqIO
+
     return list(SeqIO.parse(path, "genbank"))
 
 
-@measure.record_time_and_size
 def c3(path):
+    from cogent3.parse.genbank import iter_genbank_records
+
     return list(iter_genbank_records(path))
 
 
-@measure.record_time_and_size
 def sb(path):
+    from skbio.io import read
+
     return list(read(path, format="genbank"))
