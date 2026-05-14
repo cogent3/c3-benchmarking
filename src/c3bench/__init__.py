@@ -50,6 +50,12 @@ def main() -> None:
 _path = click.option("--path", type=pathlib.Path, required=True)
 _result_root = click.option("--result_root", type=pathlib.Path, required=True)
 _runs = click.option("--runs", type=int, default=3)
+_timeout = click.option(
+    "--timeout",
+    type=int,
+    default=600,
+    help="Per-iteration wall-clock cap (seconds). 0 disables.",
+)
 
 
 @main.command(**_click_command_opts)
@@ -86,7 +92,13 @@ def _aggregate(result: dict) -> list:
     return [name, status, statistics.mean(times), _stddev(times), mean_m, std_m]
 
 
-def _run_task(task: str, path: pathlib.Path, result_root: pathlib.Path, runs: int) -> None:
+def _run_task(
+    task: str,
+    path: pathlib.Path,
+    result_root: pathlib.Path,
+    runs: int,
+    timeout: int,
+) -> None:
     module_name, out_subdir = _TASK_MODULES[task]
     module = importlib.import_module(module_name)
     commands: dict[str, str] = module.COMMANDS
@@ -102,16 +114,29 @@ def _run_task(task: str, path: pathlib.Path, result_root: pathlib.Path, runs: in
     quoted_path = shlex.quote(str(path))
     # One hyperfine invocation per tool so each gets a fresh parent process.
     # On macOS, `getrusage(RUSAGE_CHILDREN).ru_maxrss` is cumulative across
-    # reaped children of the parent; a shared hyperfine session lets earlier
+    # reaped children of the parent. A shared hyperfine session lets earlier
     # tools' peak RSS contaminate later rows. Per-tool invocation isolates the
     # accounting. Linux is unaffected but uses the same path for simplicity.
-    rows = [_aggregate(_run_one(tool, template, quoted_path, runs))
+    rows = [_aggregate(_run_one(tool, template, quoted_path, runs, timeout))
             for tool, template in commands.items()]
     table = cogent3.make_table(header=_TSV_COLUMNS, data=rows)
     table.write(outpath)
 
 
-def _run_one(tool: str, template: str, quoted_path: str, runs: int) -> dict:
+def _wrap_timeout(cmd: str, timeout: int) -> str:
+    # `timeout` from GNU coreutils (installed via pixi). Exits 124 on timeout,
+    # which surfaces as Result Type=Error via the non-zero-exit_code check.
+    return f"timeout {timeout}s {cmd}" if timeout > 0 else cmd
+
+
+def _run_one(
+    tool: str,
+    template: str,
+    quoted_path: str,
+    runs: int,
+    timeout: int,
+) -> dict:
+    cmd = _wrap_timeout(template.format(path=quoted_path), timeout)
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
         json_path = pathlib.Path(tmp.name)
     try:
@@ -123,7 +148,7 @@ def _run_one(tool: str, template: str, quoted_path: str, runs: int) -> dict:
                 "--ignore-failure",
                 "--export-json", str(json_path),
                 "--command-name", tool,
-                template.format(path=quoted_path),
+                cmd,
             ],
             check=True,
         )
@@ -136,32 +161,44 @@ def _run_one(tool: str, template: str, quoted_path: str, runs: int) -> dict:
 @_path
 @_result_root
 @_runs
-def parse_gbk(path: pathlib.Path, result_root: pathlib.Path, runs: int) -> None:
-    _run_task("parse-gbk", path, result_root, runs)
+@_timeout
+def parse_gbk(
+    path: pathlib.Path, result_root: pathlib.Path, runs: int, timeout: int,
+) -> None:
+    _run_task("parse-gbk", path, result_root, runs, timeout)
 
 
 @main.command(**_click_command_opts)
 @_path
 @_result_root
 @_runs
-def parse_fasta(path: pathlib.Path, result_root: pathlib.Path, runs: int) -> None:
-    _run_task("parse-fasta", path, result_root, runs)
+@_timeout
+def parse_fasta(
+    path: pathlib.Path, result_root: pathlib.Path, runs: int, timeout: int,
+) -> None:
+    _run_task("parse-fasta", path, result_root, runs, timeout)
 
 
 @main.command(**_click_command_opts)
 @_path
 @_result_root
 @_runs
-def parse_gff(path: pathlib.Path, result_root: pathlib.Path, runs: int) -> None:
-    _run_task("parse-gff", path, result_root, runs)
+@_timeout
+def parse_gff(
+    path: pathlib.Path, result_root: pathlib.Path, runs: int, timeout: int,
+) -> None:
+    _run_task("parse-gff", path, result_root, runs, timeout)
 
 
 @main.command(**_click_command_opts)
 @_path
 @_result_root
 @_runs
-def load_aln(path: pathlib.Path, result_root: pathlib.Path, runs: int) -> None:
-    _run_task("load-aln", path, result_root, runs)
+@_timeout
+def load_aln(
+    path: pathlib.Path, result_root: pathlib.Path, runs: int, timeout: int,
+) -> None:
+    _run_task("load-aln", path, result_root, runs, timeout)
 
 
 if __name__ == "__main__":
