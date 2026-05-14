@@ -137,8 +137,14 @@ def _run_one(
     timeout: int,
 ) -> dict:
     cmd = _wrap_timeout(template.format(path=quoted_path), timeout)
-    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
-        json_path = pathlib.Path(tmp.name)
+    # Hyperfine swallows child stdout/stderr by default. We redirect stderr to
+    # a temp file inside the shell command so the timed run stays clean, then
+    # dump that file's contents if any iteration exited non-zero.
+    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp_json:
+        json_path = pathlib.Path(tmp_json.name)
+    with tempfile.NamedTemporaryFile(suffix=".log", delete=False) as tmp_err:
+        err_path = pathlib.Path(tmp_err.name)
+    cmd_with_redir = f"{cmd} 2>{shlex.quote(str(err_path))}"
     try:
         subprocess.run(
             [
@@ -148,13 +154,19 @@ def _run_one(
                 "--ignore-failure",
                 "--export-json", str(json_path),
                 "--command-name", tool,
-                cmd,
+                cmd_with_redir,
             ],
             check=True,
         )
-        return json.loads(json_path.read_text())["results"][0]
+        result = json.loads(json_path.read_text())["results"][0]
+        if any(c != 0 for c in result.get("exit_codes", [])):
+            err_text = err_path.read_text(errors="replace").strip()
+            if err_text:
+                click.echo(f"\n[{tool} failed — stderr from last iteration]\n{err_text}\n")
+        return result
     finally:
         json_path.unlink(missing_ok=True)
+        err_path.unlink(missing_ok=True)
 
 
 @main.command(**_click_command_opts)
