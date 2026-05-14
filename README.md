@@ -6,7 +6,7 @@ Benchmarking cogent3 and other Python/R tools for sequence analysis.
 
 This project **WILL** benchmark cogent3, biopython, scikit-bio, and R tools (Biostrings, genbankr, rtracklayer, ape) for common sequence analysis tasks.
 
-Each `(task, tool)` pair is run as a standalone process under [`hyperfine`](https://github.com/sharkdp/hyperfine); wall time and peak RSS are aggregated across runs and written to a TSV. Cold-import cost is included in the timed region, which reflects what an end user pays.
+Each `(task, tool)` pair is run as a standalone process under [`hyperfine`](https://github.com/sharkdp/hyperfine). Wall time and peak RSS are aggregated across runs and written to a TSV. Cold-import cost is included in the timed region, which reflects what an end user pays.
 
 ---
 
@@ -44,6 +44,6 @@ Load a multiple sequence alignment (compares biopython, cogent3 default, cogent3
 pixi run c3bench load-aln --result_root results --path data/sars_msa/public-2024-10-01.all.msa.fa
 ```
 
-`--runs` controls how many timed iterations hyperfine performs per tool (default 3). For tasks with side-effect setup (e.g. `load-aln`'s `.c3h5s` companion file), the orchestrator invokes `c3bench prepare <task> --path …` first; the prepare step is idempotent.
+`--runs` controls how many timed iterations hyperfine performs per tool (default 3). For tasks with side-effect setup (e.g. `load-aln`'s `.c3h5s` companion file), the orchestrator invokes `c3bench prepare <task> --path …` first. The prepare step is idempotent.
 
 See `c3bench --help` for the rest of the subcommands (`parse-gbk`, `parse-gff`).

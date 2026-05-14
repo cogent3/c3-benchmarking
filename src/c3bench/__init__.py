@@ -100,26 +100,36 @@ def _run_task(task: str, path: pathlib.Path, result_root: pathlib.Path, runs: in
     outpath = (outdir / f"{path.name}.tsv").absolute()
 
     quoted_path = shlex.quote(str(path))
+    # One hyperfine invocation per tool so each gets a fresh parent process.
+    # On macOS, `getrusage(RUSAGE_CHILDREN).ru_maxrss` is cumulative across
+    # reaped children of the parent; a shared hyperfine session lets earlier
+    # tools' peak RSS contaminate later rows. Per-tool invocation isolates the
+    # accounting. Linux is unaffected but uses the same path for simplicity.
+    rows = [_aggregate(_run_one(tool, template, quoted_path, runs))
+            for tool, template in commands.items()]
+    table = cogent3.make_table(header=_TSV_COLUMNS, data=rows)
+    table.write(outpath)
+
+
+def _run_one(tool: str, template: str, quoted_path: str, runs: int) -> dict:
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
         json_path = pathlib.Path(tmp.name)
     try:
-        args = [
-            "hyperfine",
-            "--warmup", "1",
-            "--runs", str(runs),
-            "--ignore-failure",
-            "--export-json", str(json_path),
-        ]
-        for tool, template in commands.items():
-            args += ["--command-name", tool, template.format(path=quoted_path)]
-        subprocess.run(args, check=True)
-        data = json.loads(json_path.read_text())
+        subprocess.run(
+            [
+                "hyperfine",
+                "--warmup", "1",
+                "--runs", str(runs),
+                "--ignore-failure",
+                "--export-json", str(json_path),
+                "--command-name", tool,
+                template.format(path=quoted_path),
+            ],
+            check=True,
+        )
+        return json.loads(json_path.read_text())["results"][0]
     finally:
         json_path.unlink(missing_ok=True)
-
-    rows = [_aggregate(r) for r in data["results"]]
-    table = cogent3.make_table(header=_TSV_COLUMNS, data=rows)
-    table.write(outpath)
 
 
 @main.command(**_click_command_opts)
