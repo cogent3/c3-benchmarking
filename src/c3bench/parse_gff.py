@@ -1,3 +1,11 @@
+COMMANDS = {
+    "bp": "c3bench-run parse-gff bp --path {path}",
+    "c3": "c3bench-run parse-gff c3 --path {path}",
+    "c3db": "c3bench-run parse-gff c3db --path {path}",
+    "sb": "c3bench-run parse-gff sb --path {path}",
+}
+
+
 def bp(path):
     from BCBio import GFF
 

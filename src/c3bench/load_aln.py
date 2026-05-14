@@ -1,3 +1,12 @@
+COMMANDS = {
+    "bp": "c3bench-run load-aln bp --path {path}",
+    "c3": "c3bench-run load-aln c3 --path {path}",
+    "c3h5s": "c3bench-run load-aln c3h5s --path {path}",
+    "c3h5s_formatted": "c3bench-run load-aln c3h5s_formatted --path {path}",
+    "sb": "c3bench-run load-aln sb --path {path}",
+}
+
+
 def bp(path):
     from Bio import AlignIO
 

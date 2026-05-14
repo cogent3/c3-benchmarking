@@ -1,3 +1,10 @@
+COMMANDS = {
+    "bp": "c3bench-run parse-gbk bp --path {path}",
+    "c3": "c3bench-run parse-gbk c3 --path {path}",
+    "sb": "c3bench-run parse-gbk sb --path {path}",
+}
+
+
 def bp(path):
     from Bio import SeqIO
 

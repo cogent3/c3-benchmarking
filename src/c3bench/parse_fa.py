@@ -1,3 +1,10 @@
+COMMANDS = {
+    "bp": "c3bench-run parse-fasta bp --path {path}",
+    "c3": "c3bench-run parse-fasta c3 --path {path}",
+    "sb": "c3bench-run parse-fasta sb --path {path}",
+}
+
+
 def bp(path):
     from Bio import SeqIO
 
