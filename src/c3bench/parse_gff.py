@@ -10,7 +10,8 @@ def bp(path):
     from BCBio import GFF
 
     with open(path) as in_handle:
-        return list(GFF.parse(in_handle))
+        for _ in GFF.parse(in_handle):
+            pass
 
 
 def _null(**kwargs):
@@ -20,16 +21,18 @@ def _null(**kwargs):
 def c3(path):
     from cogent3.parse.gff import gff_parser
 
-    return list(gff_parser(path, make_record=_null))
+    for _ in gff_parser(path, make_record=_null):
+        pass
 
 
 def c3db(path):
     import cogent3
 
-    return cogent3.load_annotations(path=path)
+    cogent3.load_annotations(path=path)
 
 
 def sb(path):
     from skbio.io import read
 
-    return list(read(path, format="gff3"))
+    for _ in read(path, format="gff3"):
+        pass
