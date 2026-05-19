@@ -16,7 +16,7 @@ import click
 TASK_MODULES = {
     "parse-fasta": "c3bench.parse_fa",
     "parse-gbk": "c3bench.parse_gbk",
-    "parse-gff": "c3bench.parse_gff",
+    "parse-ann-gff": "c3bench.parse_ann_gff",
     "load-aln": "c3bench.load_aln",
 }
 

@@ -26,7 +26,7 @@ _click_command_opts = {
 _TASK_MODULES = {
     "parse-fasta": ("c3bench.parse_fa", "parse_fasta"),
     "parse-gbk": ("c3bench.parse_gbk", "parse_gbk"),
-    "parse-gff": ("c3bench.parse_gff", "parse_gff"),
+    "parse-gff": ("c3bench.parse_ann_gff", "parse_ann_gff"),
     "load-aln": ("c3bench.load_aln", "load_aln"),
 }
 
@@ -117,8 +117,10 @@ def _run_task(
     # reaped children of the parent. A shared hyperfine session lets earlier
     # tools' peak RSS contaminate later rows. Per-tool invocation isolates the
     # accounting. Linux is unaffected but uses the same path for simplicity.
-    rows = [_aggregate(_run_one(tool, template, quoted_path, runs, timeout))
-            for tool, template in commands.items()]
+    rows = [
+        _aggregate(_run_one(tool, template, quoted_path, runs, timeout))
+        for tool, template in commands.items()
+    ]
     table = cogent3.make_table(header=_TSV_COLUMNS, data=rows)
     table.write(outpath)
 
@@ -149,11 +151,15 @@ def _run_one(
         subprocess.run(
             [
                 "hyperfine",
-                "--warmup", "1",
-                "--runs", str(runs),
+                "--warmup",
+                "1",
+                "--runs",
+                str(runs),
                 "--ignore-failure",
-                "--export-json", str(json_path),
-                "--command-name", tool,
+                "--export-json",
+                str(json_path),
+                "--command-name",
+                tool,
                 cmd_with_redir,
             ],
             check=True,
@@ -162,7 +168,9 @@ def _run_one(
         if any(c != 0 for c in result.get("exit_codes", [])):
             err_text = err_path.read_text(errors="replace").strip()
             if err_text:
-                click.echo(f"\n[{tool} failed — stderr from last iteration]\n{err_text}\n")
+                click.echo(
+                    f"\n[{tool} failed — stderr from last iteration]\n{err_text}\n"
+                )
         return result
     finally:
         json_path.unlink(missing_ok=True)
@@ -175,7 +183,10 @@ def _run_one(
 @_runs
 @_timeout
 def parse_gbk(
-    path: pathlib.Path, result_root: pathlib.Path, runs: int, timeout: int,
+    path: pathlib.Path,
+    result_root: pathlib.Path,
+    runs: int,
+    timeout: int,
 ) -> None:
     _run_task("parse-gbk", path, result_root, runs, timeout)
 
@@ -186,7 +197,10 @@ def parse_gbk(
 @_runs
 @_timeout
 def parse_fasta(
-    path: pathlib.Path, result_root: pathlib.Path, runs: int, timeout: int,
+    path: pathlib.Path,
+    result_root: pathlib.Path,
+    runs: int,
+    timeout: int,
 ) -> None:
     _run_task("parse-fasta", path, result_root, runs, timeout)
 
@@ -196,8 +210,11 @@ def parse_fasta(
 @_result_root
 @_runs
 @_timeout
-def parse_gff(
-    path: pathlib.Path, result_root: pathlib.Path, runs: int, timeout: int,
+def parse_ann_gff(
+    path: pathlib.Path,
+    result_root: pathlib.Path,
+    runs: int,
+    timeout: int,
 ) -> None:
     _run_task("parse-gff", path, result_root, runs, timeout)
 
@@ -208,7 +225,10 @@ def parse_gff(
 @_runs
 @_timeout
 def load_aln(
-    path: pathlib.Path, result_root: pathlib.Path, runs: int, timeout: int,
+    path: pathlib.Path,
+    result_root: pathlib.Path,
+    runs: int,
+    timeout: int,
 ) -> None:
     _run_task("load-aln", path, result_root, runs, timeout)
 
