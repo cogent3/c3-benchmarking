@@ -8,19 +8,19 @@ COMMANDS = {
 def bp(path):
     from Bio import SeqIO
 
-    for _ in SeqIO.parse(path, "genbank"):
+    for seq in SeqIO.parse(path, "genbank"):
         pass
 
 
 def c3(path):
     from cogent3.parse.genbank import iter_genbank_records
 
-    for _ in iter_genbank_records(path, convert_features=False):
+    for label, seq, _ in iter_genbank_records(path, convert_features=False):
         pass
 
 
 def sb(path):
     from skbio.io import read
 
-    for _ in read(path, format="genbank"):
+    for seq in read(path, format="genbank"):
         pass

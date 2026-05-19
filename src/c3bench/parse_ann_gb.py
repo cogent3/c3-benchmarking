@@ -10,26 +10,24 @@ def bp(path):
     from Bio import SeqIO
 
     for record in SeqIO.parse(path, "genbank"):
-        for _ in record.features:
-            pass
+        features = list(record.features)
 
 
 def c3(path):
     from cogent3.parse.genbank import iter_genbank_records
 
-    for _ in iter_genbank_records(path, convert_features=True):
+    for label, seq, features in iter_genbank_records(path):
         pass
 
 
 def c3gbdb(path):
     import cogent3
 
-    cogent3.load_annotations(path=path)
+    cogent3.load_annotations(path=path, format_name="genbank")
 
 
 def sb(path):
     from skbio.io import read
 
     for seq in read(path, format="genbank"):
-        for _ in seq.interval_metadata.query():
-            pass
+        features = list(seq.interval_metadata.query())

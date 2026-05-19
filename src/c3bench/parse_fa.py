@@ -8,19 +8,19 @@ COMMANDS = {
 def bp(path):
     from Bio import SeqIO
 
-    for _ in SeqIO.parse(path, "fasta"):
+    for seq in SeqIO.parse(path, "fasta"):
         pass
 
 
 def c3(path):
     from cogent3.parse.fasta import iter_fasta_records
 
-    for _ in iter_fasta_records(path):
+    for label, seq in iter_fasta_records(path):
         pass
 
 
 def sb(path):
     from skbio.io import read
 
-    for _ in read(path, format="fasta"):
+    for seq in read(path, format="fasta"):
         pass
