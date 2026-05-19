@@ -1,4 +1,5 @@
 *
+!*/
 !.devcontainer/devcontainer.json
 !.gitignore
 !.hgignore
@@ -9,4 +10,4 @@
 !*.toml
 !scripts/redo_all.sh
 !setup_data.py
-!src/**/*.py**
+!src/**/*.py
