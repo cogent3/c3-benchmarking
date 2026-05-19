@@ -27,6 +27,7 @@ _TASK_MODULES = {
     "parse-fasta": ("c3bench.parse_fa", "parse_fasta"),
     "parse-gbk": ("c3bench.parse_gbk", "parse_gbk"),
     "parse-gff": ("c3bench.parse_ann_gff", "parse_ann_gff"),
+    "parse-ann-gb": ("c3bench.parse_ann_gb", "parse_ann_gb"),
     "load-aln": ("c3bench.load_aln", "load_aln"),
 }
 
@@ -217,6 +218,20 @@ def parse_ann_gff(
     timeout: int,
 ) -> None:
     _run_task("parse-gff", path, result_root, runs, timeout)
+
+
+@main.command(**_click_command_opts)
+@_path
+@_result_root
+@_runs
+@_timeout
+def parse_ann_gb(
+    path: pathlib.Path,
+    result_root: pathlib.Path,
+    runs: int,
+    timeout: int,
+) -> None:
+    _run_task("parse-ann-gb", path, result_root, runs, timeout)
 
 
 @main.command(**_click_command_opts)

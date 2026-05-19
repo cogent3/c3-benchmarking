@@ -1,7 +1,7 @@
 COMMANDS = {
     "bp": "c3bench-run parse-gff bp --path {path}",
     "c3": "c3bench-run parse-gff c3 --path {path}",
-    "c3db": "c3bench-run parse-gff c3db --path {path}",
+    "c3gffdb": "c3bench-run parse-gff c3gffdb --path {path}",
     "sb": "c3bench-run parse-gff sb --path {path}",
 }
 
@@ -25,7 +25,7 @@ def c3(path):
         pass
 
 
-def c3db(path):
+def c3gffdb(path):
     import cogent3
 
     cogent3.load_annotations(path=path)

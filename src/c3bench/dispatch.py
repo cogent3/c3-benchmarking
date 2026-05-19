@@ -17,6 +17,7 @@ TASK_MODULES = {
     "parse-fasta": "c3bench.parse_fa",
     "parse-gbk": "c3bench.parse_gbk",
     "parse-ann-gff": "c3bench.parse_ann_gff",
+    "parse-ann-gb": "c3bench.parse_ann_gb",
     "load-aln": "c3bench.load_aln",
 }
 
