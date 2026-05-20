@@ -3,6 +3,7 @@ import contextlib
 import dataclasses
 import os
 import pathlib
+import shutil
 import tarfile
 import tempfile
 import typing
@@ -83,71 +84,51 @@ class DataSet:
 
 datasets = [
     DataSet(
-        url="https://www.dropbox.com/scl/fi/modoidbrul7vgjc4cftqj/soil_reference_genomes.zip?rlkey=tdxhgdayqpdb920z6eqi7avmn&dl=1",
-        dataset_name="micro_gbk",
+        url="https://www.dropbox.com/scl/fi/lmc5t8frmc8vr7cm40o18/c3bench-parser.zip?rlkey=8cqsx3elyzmilcwu1gxzt4rb6&dl=1",
+        dataset_name="data",
         archive_type="zip",
-        dest_name="soil_reference_genomes.zip",
-    ),
-    DataSet(
-        url="https://www.dropbox.com/scl/fi/odwpk4sbwrxvap06z6pkd/soil_reference_genomes_fasta.tar?rlkey=52y8mcemszfxh57mhgph3i23x&dl=1",
-        dataset_name="micro_fa",
-        archive_type="tar",
-        dest_name="soil_reference_genomes_fasta.tar",
-    ),
-    DataSet(
-        url="https://ftp.ensembl.org/pub/current_genbank/homo_sapiens/Homo_sapiens.GRCh38.114.chromosome.1.dat.gz",
-        dataset_name="hsap_gbk",
-        archive_type="gz",
-        dest_name="Homo_sapiens.GRCh38.114.chromosome.1.dat.gz",
-    ),
-    DataSet(
-        url="https://ftp.ensembl.org/pub/current_fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.1.fa.gz",
-        dataset_name="hsap_fa",
-        archive_type="gz",
-        dest_name="Homo_sapiens.GRCh38.dna.chromosome.1.fa.gz",
-    ),
-    DataSet(
-        url="https://ftp.ensembl.org/pub/current_gff3/homo_sapiens/Homo_sapiens.GRCh38.114.gff3.gz",
-        dataset_name="hsap_gff3",
-        archive_type="gz",
-        dest_name="Homo_sapiens.GRCh38.114.gff3.gz",
-    ),
-    DataSet(
-        url="https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2/2024/10/01/public-2024-10-01.all.msa.fa.xz",
-        dataset_name="sars_msa",
-        archive_type="xz",
-        dest_name="public-2024-10-01.all.msa.fa.xz",
+        dest_name="data",
     ),
 ]
 
 
 def get_install_remote(dataset: DataSet) -> pathlib.Path:
-    expected = DATA_DIR / dataset.dataset_name
-    if expected.exists():
-        return expected
+    is_full_data = dataset.dataset_name == dataset.dest_name == "data"
 
-    dest = DATA_DIR / dataset.dest_name
+    if is_full_data:
+        if DATA_DIR.exists():
+            backup = PROJ_ROOT / "data.bak"
+            if backup.exists():
+                shutil.rmtree(backup)
+            DATA_DIR.rename(backup)
+        expected = DATA_DIR
+        # avoid collision with the "data/" top-level inside the archive
+        dest_name = f"{dataset.dest_name}.{dataset.archive_type}"
+    else:
+        expected = DATA_DIR / dataset.dataset_name
+        if expected.exists():
+            return expected
+        dest_name = dataset.dest_name
+
+    dest = DATA_DIR / dest_name
     if dest.exists():
         # assuming not decompressed
         dest.unlink()
 
     with temp_cwd():
-        urllib.request.urlretrieve(dataset.url, filename=dataset.dest_name)  # noqa: S310
+        urllib.request.urlretrieve(dataset.url, filename=dest_name)  # noqa: S310
         if dataset.archive_type not in {"tar", "zip"}:
-            curr = pathlib.Path(dataset.dest_name)
-            dest_dir = DATA_DIR / dataset.dataset_name
-            dest_dir.mkdir(exist_ok=True)
-            curr.rename(dest_dir / curr.name)
+            curr = pathlib.Path(dest_name)
+            expected.mkdir(exist_ok=True)
+            curr.rename(expected / curr.name)
 
         if dataset.archive_type == "tar":
-            curr = pathlib.Path(dataset.dest_name)
-            dest_dir = DATA_DIR / dataset.dataset_name
-            extract_tar(curr, dest_dir)
+            curr = pathlib.Path(dest_name)
+            extract_tar(curr, expected)
 
         if dataset.archive_type == "zip":
-            curr = pathlib.Path(dataset.dest_name)
-            dest_dir = DATA_DIR / dataset.dataset_name
-            extract_zip(curr, dest_dir)
+            curr = pathlib.Path(dest_name)
+            extract_zip(curr, expected)
 
     return expected
 

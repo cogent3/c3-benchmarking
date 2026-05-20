@@ -164,6 +164,7 @@ def data_set_description(dirname: str) -> str:
         "sars_msa": "Alignment of ~89k SARS-CoV-2 genomes",
         "micro_fa": "The E. coli K12 genome in FASTA format",
         "micro_gbk": "The E. coli K12 genome in GenBank format",
+        "marine_fastq": "Metagenomic sequencing reads from marine study PRJEB1787",
     }
     return mapping.get(dirname, dirname)
 

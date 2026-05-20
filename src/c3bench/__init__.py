@@ -25,6 +25,7 @@ _click_command_opts = {
 # results-subdirectory name).
 _TASK_MODULES = {
     "parse-fasta": ("c3bench.parse_fa", "parse_fasta"),
+    "parse-fastq": ("c3bench.parse_fq", "parse_fastq"),
     "parse-gbk": ("c3bench.parse_gbk", "parse_gbk"),
     "parse-ann-gff": ("c3bench.parse_ann_gff", "parse_ann_gff"),
     "parse-ann-gb": ("c3bench.parse_ann_gb", "parse_ann_gb"),
@@ -204,6 +205,20 @@ def parse_fasta(
     timeout: int,
 ) -> None:
     _run_task("parse-fasta", path, result_root, runs, timeout)
+
+
+@main.command(**_click_command_opts)
+@_path
+@_result_root
+@_runs
+@_timeout
+def parse_fastq(
+    path: pathlib.Path,
+    result_root: pathlib.Path,
+    runs: int,
+    timeout: int,
+) -> None:
+    _run_task("parse-fastq", path, result_root, runs, timeout)
 
 
 @main.command(**_click_command_opts)
