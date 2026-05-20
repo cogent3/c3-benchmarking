@@ -6,34 +6,44 @@ Benchmarking cogent3 and other Python/R tools for sequence analysis.
 
 This project **WILL** benchmark cogent3, biopython, scikit-bio, and R tools (Biostrings, genbankr, rtracklayer, ape) for common sequence analysis tasks.
 
+Each `(task, tool)` pair is run as a standalone process under [`hyperfine`](https://github.com/sharkdp/hyperfine). Wall time and peak RSS are aggregated across runs and written to a TSV. Cold-import cost is included in the timed region, which reflects what an end user pays.
+
 ---
 
-## For Developers (VS Code / Dev Container)
+## For Developers
 
-1. **Clone the repository:**
+The dev environment is managed by [pixi](https://pixi.sh). It installs Python, R (when wired up), `hyperfine`, and the `c3bench` package in editable mode from `conda-forge` and PyPI.
+
+1. **Install pixi** (one-time): see <https://pixi.sh/latest/#installation>.
+2. **Provision the environment:**
    ```sh
-   git clone https://github.com/khiron/c3-benchmarking.git
-   cd c3-benchmarking
+   pixi install
    ```
-2. **Open in VS Code.**
-3. **Reopen in Container** when prompted, or use the Command Palette: `Dev Containers: Reopen in Container`.
-4. The workspace will be bind-mounted into the container as `c3-benchmarking`. The environment is set up automatically.
-5. **Install your code in editable mode:** This is done automatically when the container is built.
+3. **Download datasets** (~4 GB into `data/`):
+   ```sh
+   pixi run setup-data
+   ```
+
+To run anything below in the env, prefix with `pixi run` (or open a shell with `pixi shell`).
 
 ---
 
-## Data
+## Running benchmarks
 
-Within the active docker container, change into the `c3-benchmarking` directory and run
+Each benchmark runs every supported tool against the same input file and writes a TSV summary to `results/<task>/<dataset>/<file>.tsv` with mean/std time and mean/std RAM per tool.
 
+Parse a FASTA file with biopython, cogent3, and scikit-bio:
+
+```sh
+pixi run c3bench parse-fasta --result_root results --path data/hsap_fa/Homo_sapiens.GRCh38.dna.chromosome.1.fa
 ```
-python setup_data.py
+
+Load a multiple sequence alignment (compares biopython, cogent3 default, cogent3 with the `c3h5s` storage backend, and scikit-bio):
+
+```sh
+pixi run c3bench load-aln --result_root results --path data/sars_msa/public-2024-10-01.all.msa.fa
 ```
 
-This will download any datasets not yet present and put them into `data/`. They currently take up ~4GB.
+`--runs` controls how many timed iterations hyperfine performs per tool (default 3). For tasks with side-effect setup (e.g. `load-aln`'s `.c3h5s` companion file), the orchestrator invokes `c3bench prepare <task> --path …` first. The prepare step is idempotent.
 
----
-
-## Note on VS Code Dev Container Terminals
-
-After the container builds, the initial terminal may be used by VS Code for setup and extension installation, and may appear to hang or display setup logs. For interactive work, open a new terminal in VS Code after the container is ready.
+See `c3bench --help` for the rest of the subcommands (`parse-gbk`, `parse-gff`).

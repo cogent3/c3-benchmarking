@@ -1,0 +1,26 @@
+[workspace]
+name = "c3-benchmarking"
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "linux-64"]
+
+[dependencies]
+python = "3.13.*"
+hyperfine = ">=1.20"
+coreutils = "*"
+h5py = "*"
+python-blosc2 = "*"
+ruff = "*"
+# R packages land here once R benchmarks are wired up:
+# r-base = "*"
+# r-biostrings = "*"
+# r-ape = "*"
+# bioconductor-genbankr = "*"
+# bioconductor-rtracklayer = "*"
+
+[pypi-dependencies]
+c3bench = { path = ".", editable = true }
+
+[tasks]
+setup-data = "python setup_data.py"
+lint = "ruff check ."
+fmt = "ruff format ."
