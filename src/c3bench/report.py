@@ -162,8 +162,9 @@ def data_set_description(dirname: str) -> str:
         "ptro_fa": "Chimpanzee genome",
         "sars_fa": "Alignment of ~89k SARS-CoV-2 genomes in FASTA format",
         "sars_msa": "Alignment of ~89k SARS-CoV-2 genomes",
-        "micro_fa": "A microbial genome in FASTA format",
-        "micro_gbk": "A microbial genome in GenBank format",
+        "micro_fa": "The E. coli K12 genome in FASTA format",
+        "micro_gbk": "The E. coli K12 genome in GenBank format",
+        "marine_fastq": "Metagenomic sequencing reads from marine study PRJEB1787",
     }
     return mapping.get(dirname, dirname)
 
@@ -183,14 +184,12 @@ def data_summary(data_root, suffixes):
             if not p.is_file() or p in seen:
                 continue
             seen.add(p)
-            rows.append(
-                [
-                    p.parent.name,
-                    suffix,
-                    format_bytes(p.stat().st_size),
-                    data_set_description(p.parent.name),
-                ]
-            )
+            rows.append([
+                p.parent.name,
+                suffix,
+                format_bytes(p.stat().st_size),
+                data_set_description(p.parent.name),
+            ])
     rows.sort()
     return cogent3.make_table(
         header=["dataset", "suffix", "size", "description"], data=rows

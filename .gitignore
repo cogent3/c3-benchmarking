@@ -8,6 +8,6 @@
 !README.md
 !nbks/compare-parsing-loading.ipynb
 !*.toml
-!scripts/redo_all.sh
+!scripts/*.sh
 !setup_data.py
 !src/**/*.py
